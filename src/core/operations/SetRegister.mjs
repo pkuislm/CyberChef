@@ -6,7 +6,6 @@
 
 import Operation from "../Operation.mjs";
 import Dish from "../Dish.mjs";
-import XRegExp from "xregexp";
 import { isWorkerEnvironment } from "../Utils.mjs";
 
 /**
@@ -31,6 +30,11 @@ class SetRegister extends Operation {
                 "name": "Value",
                 "type": "string",
                 "value": ""
+            },
+            {
+                "name": "Use output",
+                "type": "boolean",
+                "value": false
             }
         ];
     }
@@ -44,14 +48,16 @@ class SetRegister extends Operation {
      */
     async run(state) {
         const ings = state.opList[state.progress].ingValues;
-        const [value] = ings;
+        const [value, u] = ings;
 
-        if (!value) {
-            value = await state.dish.get(Dish.STRING);
+        const c = u ? await state.dish.get(Dish.STRING) : value ?? "";
+
+        if (!c) {
+            return state;
         }
 
         if (isWorkerEnvironment()) {
-            self.setRegisters(state.forkOffset + state.progress, state.numRegisters, value);
+            self.setRegisters(state.forkOffset + state.progress, state.numRegisters, c);
         }
 
         /**
@@ -64,10 +70,10 @@ class SetRegister extends Operation {
             // Replace references to registers ($Rn) with contents of registers
             return str.replace(/(\\*)\$R(\d{1,2})/g, (match, slashes, regNum) => {
                 const index = parseInt(regNum, 10) + 1;
-                if (index <= state.numRegisters || index >= state.numRegisters + registers.length)
+                if (index <= state.numRegisters || index >= state.numRegisters + 1)
                     return match;
                 if (slashes.length % 2 !== 0) return match.slice(1); // Remove escape
-                return slashes + registers[index - state.numRegisters];
+                return slashes + "R" + index - state.numRegisters;
             });
         }
 
@@ -88,7 +94,7 @@ class SetRegister extends Operation {
             state.opList[i].ingValues = args;
         }
 
-        state.numRegisters += registers.length - 1;
+        state.numRegisters += 1;
         return state;
     }
 
