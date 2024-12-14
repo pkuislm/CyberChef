@@ -57,7 +57,7 @@ class SetRegister extends Operation {
         }
 
         if (isWorkerEnvironment()) {
-            self.setRegisters(state.forkOffset + state.progress, state.numRegisters, c);
+            self.setRegisters(state.forkOffset + state.progress, state.numRegisters, [c]);
         }
 
         /**
@@ -70,10 +70,10 @@ class SetRegister extends Operation {
             // Replace references to registers ($Rn) with contents of registers
             return str.replace(/(\\*)\$R(\d{1,2})/g, (match, slashes, regNum) => {
                 const index = parseInt(regNum, 10) + 1;
-                if (index <= state.numRegisters || index >= state.numRegisters + 1)
+                if (index <= state.numRegisters || index >= state.numRegisters + 2)
                     return match;
                 if (slashes.length % 2 !== 0) return match.slice(1); // Remove escape
-                return slashes + "R" + index - state.numRegisters;
+                return slashes + c;
             });
         }
 
