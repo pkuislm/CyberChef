@@ -18,7 +18,7 @@ class SetOutput extends Operation {
         super();
 
         this.name = "Set Output";
-        this.module = "Utils";
+        this.module = "Default";
         this.description = "Set output.";
         this.inputType = "string";
         this.outputType = "string";
