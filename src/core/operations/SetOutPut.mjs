@@ -27,7 +27,12 @@ class SetOutput extends Operation {
                 "name": "Value",
                 "type": "string",
                 "value": ""
-            }
+            },
+            {
+                "name": "Insert previous result",
+                "type": "option",
+                "toggleValues": ["None", "Before", "After"]
+            },
         ];
     }
 
@@ -37,7 +42,14 @@ class SetOutput extends Operation {
      * @returns {string}
      */
     run(input, args) {
-        return args[0];
+        switch (args[1]) {
+            case "Before":
+                return input + args[0];
+            case "After":
+                return args[0] + input;
+            default:
+                return args[0];
+        }
     }
 
 }
