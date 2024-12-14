@@ -46,7 +46,9 @@ class SetRegister extends Operation {
         const ings = state.opList[state.progress].ingValues;
         const [value] = ings;
 
-        if (!value) return state;
+        if (!value) {
+            value = await state.dish.get(Dish.STRING);
+        }
 
         if (isWorkerEnvironment()) {
             self.setRegisters(state.forkOffset + state.progress, state.numRegisters, value);

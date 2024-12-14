@@ -549,6 +549,7 @@
             "Subsection",
             "Merge",
             "Register",
+            "Set Register",
             "Label",
             "Jump",
             "Conditional Jump",
