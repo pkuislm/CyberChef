@@ -31,8 +31,8 @@ class SetOutput extends Operation {
             {
                 "name": "Insert previous result",
                 "type": "option",
-                "toggleValues": ["None", "Before", "After"]
-            },
+                "value": ["None", "Before", "After"]
+            }
         ];
     }
 
